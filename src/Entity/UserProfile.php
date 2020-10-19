@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity(repositoryClass=UserProfileRepository::class)
  */
@@ -14,7 +16,7 @@ class UserProfile
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -26,6 +28,8 @@ class UserProfile
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 
@@ -46,6 +50,12 @@ class UserProfile
      * @ORM\ManyToMany(targetEntity=UserProfile::class, mappedBy="friendsRequested")
      */
     private $friendsReceived;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $password;
 
     public function __construct()
     {
@@ -140,6 +150,18 @@ class UserProfile
             $this->friendsReceived->removeElement($friendsReceived);
             $friendsReceived->removeFriendsRequested($this);
         }
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }
