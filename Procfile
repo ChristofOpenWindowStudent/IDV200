@@ -1,1 +1,1 @@
-Expose the /public folder as our web folder.
+web: vendor/bin/heroku-php-apache2 public/
